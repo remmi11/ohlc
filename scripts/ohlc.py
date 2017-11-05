@@ -47,10 +47,10 @@ def main():
     #15 MIN
     fifteen_min_summary = pd.DataFrame()
 
-    fifteen_min_summary['open'] = df.groupby('symbol')["open"].resample("15T").first()
-    fifteen_min_summary['high'] = df.groupby('symbol')["high"].resample("15T").max()
-    fifteen_min_summary['low'] = df.groupby('symbol')["low"].resample("15T").min()
-    fifteen_min_summary['close'] = df.groupby('symbol')["close"].resample("15T").last()
+    fifteen_min_summary['open'] = df.groupby('symbol')["open"].resample("15T").first().ffill()
+    fifteen_min_summary['high'] = df.groupby('symbol')["high"].resample("15T").max().ffill()
+    fifteen_min_summary['low'] = df.groupby('symbol')["low"].resample("15T").min().ffill()
+    fifteen_min_summary['close'] = df.groupby('symbol')["close"].resample("15T").last().ffill()
 
     fifteen_min_summary["interval"] = df.ix[4, 'interval'] = '15m'
 
@@ -61,10 +61,10 @@ def main():
     #1HR
     hourly_summary = pd.DataFrame()
 
-    hourly_summary['open'] = df.groupby('symbol')["open"].resample("H").first()
-    hourly_summary['high'] = df.groupby('symbol')["high"].resample("H").max()
-    hourly_summary['low'] = df.groupby('symbol')["low"].resample("H").min()
-    hourly_summary['close'] = df.groupby('symbol')["close"].resample("H").last()
+    hourly_summary['open'] = df.groupby('symbol')["open"].resample("H").first().ffill()
+    hourly_summary['high'] = df.groupby('symbol')["high"].resample("H").max().ffill()
+    hourly_summary['low'] = df.groupby('symbol')["low"].resample("H").min().ffill()
+    hourly_summary['close'] = df.groupby('symbol')["close"].resample("H").last().ffill()
 
     hourly_summary["interval"] = df.ix[4, 'interval'] = '1H'
 
