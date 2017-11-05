@@ -33,10 +33,10 @@ def main():
     #5 MIN
     five_min_summary = pd.DataFrame()
 
-    five_min_summary['open'] = df.groupby('symbol')["open"].resample("5T").first()
-    five_min_summary['high'] = df.groupby('symbol')["high"].resample("5T").max()
-    five_min_summary['low'] = df.groupby('symbol')["low"].resample("5T").min()
-    five_min_summary['close'] = df.groupby('symbol')["close"].resample("5T").last()
+    five_min_summary['open'] = df.groupby('symbol')["open"].resample("5T").first().ffill()
+    five_min_summary['high'] = df.groupby('symbol')["high"].resample("5T").max().ffill()
+    five_min_summary['low'] = df.groupby('symbol')["low"].resample("5T").min().ffill()
+    five_min_summary['close'] = df.groupby('symbol')["close"].resample("5T").last().ffill()
 
     five_min_summary["interval"] = df.ix[4, 'interval'] = '5m'
 
