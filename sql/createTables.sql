@@ -5,9 +5,11 @@ Timestamp timestamp,
 Open numeric,
 High numeric,
 Low numeric,
-close numeric,
+Close numeric,
 "interval" text COLLATE pg_catalog."default"
 );
+
+UPDATE one_minute SET "interval" = '1m';
 
 CREATE TABLE AUDCAD
 (
@@ -26,7 +28,7 @@ Timestamp timestamp,
 Open numeric,
 High numeric,
 Low numeric,
-closed numeric
+Close numeric
 );
 
 CREATE TABLE AUDNZD
