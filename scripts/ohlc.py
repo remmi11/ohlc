@@ -17,9 +17,9 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy import text
 
-engine = create_engine('postgresql://postgres@localhost:5432/ohlc')
+# engine = create_engine('postgresql://postgres@localhost:5432/ohlc')
 
-# engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
+engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
 
 connection = engine.connect()
 
@@ -74,8 +74,8 @@ def mergeTables():
 
 def main():
     
-    #1M record test
-    df = pd.read_sql_query("select * from one_minute ORDER BY timestamp limit 100000;", engine)
+    #100000 record test
+    df = pd.read_sql_query("select * from one_minute ORDER BY timestamp limit 1000000;", engine)
 
     # use this in production instead
     #df = pd.read_sql_query("select * from one_minute;", engine)
@@ -114,12 +114,12 @@ def main():
     #30 MIN
     thirty_min_summary = pd.DataFrame()
 
-    thirty_min_summary['open'] = df.groupby('symbol')["open"].resample("15T").first().ffill()
-    thirty_min_summary['high'] = df.groupby('symbol')["high"].resample("15T").max().ffill()
-    thirty_min_summary['low'] = df.groupby('symbol')["low"].resample("15T").min().ffill()
-    thirty_min_summary['close'] = df.groupby('symbol')["close"].resample("15T").last().ffill()
+    thirty_min_summary['open'] = df.groupby('symbol')["open"].resample("30T").first().ffill()
+    thirty_min_summary['high'] = df.groupby('symbol')["high"].resample("30T").max().ffill()
+    thirty_min_summary['low'] = df.groupby('symbol')["low"].resample("30T").min().ffill()
+    thirty_min_summary['close'] = df.groupby('symbol')["close"].resample("30T").last().ffill()
 
-    thirty_min_summary["interval"] = df.ix[4, 'interval'] = '15m'
+    thirty_min_summary["interval"] = df.ix[4, 'interval'] = '30m'
 
     # thirty_min_summary.head()
     thirty_min_summary.to_sql('thirty_min_summary', engine, if_exists='replace')

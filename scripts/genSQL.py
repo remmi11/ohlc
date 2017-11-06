@@ -12,13 +12,49 @@
 ###############################################################################
 import os
 
+symbolList = ['AUDCAD',
+'AUDJPY',
+'AUDNZD',
+'AUDUSD',
+'CADJPY',
+'EURAUD',
+'EURCAD',
+'EURGBP',
+'EURJPY',
+'EURNZD',
+'EURUSD',
+'GBPAUD',
+'GBPCAD',
+'GBPJPY',
+'GBPNZD',
+'GBPUSD',
+'NZDCAD',
+'NZDJPY',
+'NZDUSD',
+'USDCAD',
+'USDJPY']
 
+def selectFROM():
+    
+    f = open('sql/selectFROM.sql','w')
+
+    for symbol in symbolList:
+
+        f.write(
+            """
+            INSERT INTO one_minute
+            SELECT * FROM {0};
+            """ .format(symbol)
+        )
+
+    f.close()
+    
 # recursively generate create table statements for csv import
 def create():
     
     f = open('sql/create.sql','w')
 
-    for file in os.listdir("1min"):
+    for symbol in symbolList:
 
         f.write(
             """
@@ -32,7 +68,7 @@ def create():
                 low numeric,
                 closed numeric
                 );
-            """ .format(file[:-4])
+            """ .format(symbol)
         )
 
     f.close()
@@ -43,11 +79,11 @@ def insertSQL():
     
     f = open('sql/insert.sql','w')
 
-    for file in os.listdir("1min"):
+    for symbol in symbolList:
         f.write(
             """
             COPY {0} (symbol, d, t, open, high, low, closed) FROM 'C:/Users/wtgeo_000/Desktop/ohlc/1min/{1}' CSV HEADER DELIMITER ',';
-            """ .format(file[:-4], file)
+            """ .format(symbol)
         )
 
     f.close()
@@ -57,11 +93,11 @@ def insertSQL():
 def mergeSQL():
     f = open('sql/merge.sql','w')
 
-    for file in os.listdir("1min"):
+    for symbol in symbolList:
         f.write(
         """
-            INSERT INTO merged (symbol, d, t, open, high, low, closed) SELECT symbol, d, t, open, high, low, closed FROM {0};
-        """ .format(file[:-4])
+            INSERT INTO one_minute (Symbol, Timestamp, Open, High, Low, Close) SELECT Symbol, Timestamp, Open, High, Low, Close FROM {0};
+        """ .format(symbol)
         )
 
     f.close()
@@ -84,7 +120,8 @@ def drop():
     f.close()
         
 
-create()
-insertSQL()
-mergeSQL()
-drop()
+selectFROM()
+# create()
+# insertSQL()
+#mergeSQL()
+# drop()

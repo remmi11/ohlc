@@ -1,3 +1,13 @@
+CREATE TABLE one_minute
+(
+Symbol character varying(6),
+Timestamp timestamp, 
+Open numeric,
+High numeric,
+Low numeric,
+Close numeric
+);
+
 CREATE TABLE AUDCAD
 (
 Symbol character varying(6),
@@ -65,7 +75,7 @@ Timestamp timestamp,
 Open numeric,
 High numeric,
 Low numeric,
-Close numeric
+Close numeric,
 );
 
 CREATE TABLE EURGBP
