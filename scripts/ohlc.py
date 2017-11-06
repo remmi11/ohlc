@@ -76,7 +76,7 @@ def mergeTables():
 
 def timeLog():
     elapsed_time = time.time() - start_time
-    print elapsed_time
+    print (elapsed_time)
 
 
 def main():
