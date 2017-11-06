@@ -22,10 +22,8 @@ start_time = time.time()
 
 
 
-engine = create_engine('postgresql://postgres@localhost:5432/ohlc')
-
-# engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
-
+# engine = create_engine('postgresql://postgres@localhost:5432/ohlc')
+engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
 connection = engine.connect()
 
 
