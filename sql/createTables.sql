@@ -5,8 +5,9 @@ Timestamp timestamp,
 Open numeric,
 High numeric,
 Low numeric,
-Close numeric
-);
+close numeric,
+"interval" text COLLATE pg_catalog."default"
+)
 
 CREATE TABLE AUDCAD
 (

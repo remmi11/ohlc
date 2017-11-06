@@ -27,7 +27,3 @@ SELECT * FROM monthly_summary;
 
 INSERT INTO resampled
 SELECT * FROM yearly_summary;
-
-
-
-
