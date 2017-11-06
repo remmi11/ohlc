@@ -15,16 +15,70 @@ from datetime import datetime
 
 import sqlalchemy
 from sqlalchemy import create_engine
-engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
+from sqlalchemy import text
+
+engine = create_engine('postgresql://postgres@localhost:5432/ohlc')
+
+# engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
+
+connection = engine.connect()
+
+
+def mergeTables():
+
+    connection.execute(text(
+        """
+        DROP TABLE IF exists resampled;
+        CREATE TABLE resampled (LIKE five_min_summary INCLUDING ALL);
+
+        INSERT INTO resampled
+        SELECT * FROM five_min_summary;
+        DROP TABLE five_min_summary;
+
+        INSERT INTO resampled
+        SELECT * FROM fifteen_min_summary;
+        DROP TABLE fifteen_min_summary;
+
+        INSERT INTO resampled
+        SELECT * FROM thirty_min_summary;
+        DROP TABLE thirty_min_summary;
+        
+        INSERT INTO resampled
+        SELECT * FROM hourly_summary;
+        DROP TABLE hourly_summary;
+
+        INSERT INTO resampled
+        SELECT * FROM four_hour_summary;
+        DROP TABLE four_hour_summary;
+
+        INSERT INTO resampled
+        SELECT * FROM daily_summary;
+        DROP TABLE daily_summary;
+
+        INSERT INTO resampled
+        SELECT * FROM weekly_summary;
+        DROP TABLE weekly_summary;
+
+        INSERT INTO resampled
+        SELECT * FROM monthly_summary;
+        DROP TABLE monthly_summary;
+
+        INSERT INTO resampled
+        SELECT * FROM yearly_summary;
+        DROP TABLE yearly_summary;
+
+        """
+    ).execution_options(autocommit=True))
+
 
 
 def main():
     
     #1M record test
-    df = pd.read_sql_query("select * from merged ORDER BY timestamp limit 1000000;", engine)
+    df = pd.read_sql_query("select * from one_minute ORDER BY timestamp limit 100000;", engine)
 
     # use this in production instead
-    #df = pd.read_sql_query("select * from merged;", engine)
+    #df = pd.read_sql_query("select * from one_minute;", engine)
 
     df = df.set_index(pd.DatetimeIndex(df['timestamp']))
 
@@ -57,7 +111,20 @@ def main():
     # fifteen_min_summary.head()
     fifteen_min_summary.to_sql('fifteen_min_summary', engine, if_exists='replace')
 
+    #30 MIN
+    thirty_min_summary = pd.DataFrame()
 
+    thirty_min_summary['open'] = df.groupby('symbol')["open"].resample("15T").first().ffill()
+    thirty_min_summary['high'] = df.groupby('symbol')["high"].resample("15T").max().ffill()
+    thirty_min_summary['low'] = df.groupby('symbol')["low"].resample("15T").min().ffill()
+    thirty_min_summary['close'] = df.groupby('symbol')["close"].resample("15T").last().ffill()
+
+    thirty_min_summary["interval"] = df.ix[4, 'interval'] = '15m'
+
+    # thirty_min_summary.head()
+    thirty_min_summary.to_sql('thirty_min_summary', engine, if_exists='replace')
+	
+	
     #1HR
     hourly_summary = pd.DataFrame()
 
@@ -142,5 +209,7 @@ def main():
     yearly_summary.to_sql('yearly_summary', engine, if_exists='replace')
 
 
+
 if __name__ == '__main__':
     main()
+    mergeTables()
