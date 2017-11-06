@@ -7,7 +7,7 @@ High numeric,
 Low numeric,
 close numeric,
 "interval" text COLLATE pg_catalog."default"
-)
+);
 
 CREATE TABLE AUDCAD
 (
@@ -76,7 +76,7 @@ Timestamp timestamp,
 Open numeric,
 High numeric,
 Low numeric,
-Close numeric,
+Close numeric
 );
 
 CREATE TABLE EURGBP
@@ -218,3 +218,4 @@ High numeric,
 Low numeric,
 Close numeric
 );
+

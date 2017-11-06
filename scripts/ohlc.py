@@ -17,9 +17,14 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy import text
 
-# engine = create_engine('postgresql://postgres@localhost:5432/ohlc')
+import time
+start_time = time.time()
 
-engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
+
+
+engine = create_engine('postgresql://postgres@localhost:5432/ohlc')
+
+# engine = create_engine('postgresql://postgres:4KS5CJlz0ZX8Po@localhost:5432/postgres')
 
 connection = engine.connect()
 
@@ -70,6 +75,10 @@ def mergeTables():
         """
     ).execution_options(autocommit=True))
 
+
+def timeLog():
+    elapsed_time = time.time() - start_time
+    print elapsed_time
 
 
 def main():
@@ -213,3 +222,5 @@ def main():
 if __name__ == '__main__':
     main()
     mergeTables()
+    timeLog()
+    
